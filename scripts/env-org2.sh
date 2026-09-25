@@ -19,5 +19,6 @@ export CORE_PEER_LOCALMSPID=Org2MSP
 export CORE_PEER_TLS_ROOTCERT_FILE="$ORG2_CA"
 export CORE_PEER_MSPCONFIGPATH="$ORG_DIR/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp"
 export CORE_PEER_ADDRESS=localhost:9051
+export LEDGER_IDENTITY_CN="Admin@org2.example.com"
 
 echo "Acting as Org2MSP (Admin@org2.example.com) -> localhost:9051"

@@ -50,12 +50,21 @@ export CORE_PEER_MSPCONFIGPATH="$ORG_DIR/peerOrganizations/org1.example.com/user
 export CORE_PEER_ADDRESS=localhost:7051
 peer lifecycle chaincode querycommitted --channelID "$CHANNEL_NAME" --name "$CC_NAME" --output json | jq .
 
+echo
+"$SCRIPT_DIR/provision-recipients.sh" || {
+    echo "WARNING: recipient provisioning failed — the smoke test will not run."
+    echo "Try ./scripts/provision-recipients.sh by hand to see why."
+}
+
 cat <<EOF
 
-Network is up and chaincode is deployed.
+Network is up, chaincode is deployed, recipient identities are provisioned.
 
 Next:
-  source $SCRIPT_DIR/env-org1.sh
+  source $SCRIPT_DIR/env-recipient.sh user-042
   $SCRIPT_DIR/smoke-test.sh
+
+Records must be submitted by the recipient they name, so use
+env-recipient.sh here. env-org1.sh is for admin work (redeploy.sh).
 
 EOF

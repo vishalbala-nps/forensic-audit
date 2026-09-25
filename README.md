@@ -78,20 +78,37 @@ All five should succeed before you continue.
 ## Quick start
 
 ```bash
-./scripts/setup.sh            # network up, channel created, chaincode deployed
-source ./scripts/env-org1.sh  # act as Org1 for peer CLI commands
-./scripts/smoke-test.sh       # 9 checks, should print "failed: 0"
+./scripts/setup.sh                          # network, chaincode, recipient identities
+source ./scripts/env-recipient.sh user-042  # act as that recipient
+./scripts/smoke-test.sh                     # 11 checks, should print "failed: 0"
 ```
 
 First run takes a few minutes while Docker starts containers and npm installs
 the chaincode dependencies. Subsequent runs are faster.
 
-Try it manually:
+**Why a recipient and not an admin.** The chaincode rejects any record whose
+`recipient_id` does not match the certificate that submitted it, so records
+must be submitted by the recipient they name. `setup.sh` provisions the
+identities automatically; `env-org1.sh` is for admin work only (`redeploy.sh`).
+
+Try it manually — each recipient submits their own record:
 
 ```bash
+source ./scripts/env-recipient.sh user-042
 ./scripts/invoke.sh testdata/record-valid.json
+
+source ./scripts/env-recipient.sh user-117
+./scripts/invoke.sh testdata/record-second-recipient.json
+
 ./scripts/query.sh a1b2c3d4e5f60718293a
 ./scripts/query.sh --all
+```
+
+Then prove the binding holds — user-117 cannot write a record blaming user-042:
+
+```bash
+source ./scripts/env-recipient.sh user-117
+./scripts/invoke.sh testdata/record-valid.json   # rejected: identity mismatch
 ```
 
 And from Python:
@@ -190,11 +207,14 @@ that looks like a crypto bug.
 |---|---|
 | `setup.sh` | Clean start: network up, channel created, chaincode deployed |
 | `teardown.sh` | Stop the network and delete all ledger data |
-| `env-org1.sh` / `env-org2.sh` | **Source** these to act as that org |
+| `provision-recipients.sh` | Create the demo recipient identities (idempotent) |
+| `new-recipient.sh <name> [Org]` | Create one named identity signed by the org CA |
+| `env-org1.sh` / `env-org2.sh` | **Source** these to act as that org's admin |
+| `env-recipient.sh <name>` | **Source** this to act as a recipient (`--list` to see them) |
 | `invoke.sh <file.json>` | Submit a record (`--single-org` for the policy demo) |
 | `query.sh <wm_id>` / `--all` | Read one record, or the whole audit trail |
 | `redeploy.sh` | Redeploy after code changes, auto-incrementing the sequence |
-| `smoke-test.sh` | 9 end-to-end checks |
+| `smoke-test.sh` | 11 end-to-end checks (run as a recipient) |
 | `logs.sh cc\|peer1\|peer2\|orderer\|errors` | Tail the right container |
 
 `env-org1.sh` and `env-org2.sh` must be **sourced**, not executed — a
@@ -313,10 +333,4 @@ Test the result properly: disconnect the network, tear everything down, and
 bring it up cold. Half-air-gapped testing on a machine that still has internet
 proves nothing.
 
-### Fallback
 
-If Fabric setup stalls, an append-only hash-chained ledger (each record storing
-the hash of its predecessor) satisfies tamper-evidence behind the same
-`submit_record` / `query_record` interface. It gives tamper-*evidence* but not
-distributed trust, since one actor can recompute the chain from the point of
-edit onward. Document it as a deliberate scope trade-off if you fall back to it.
