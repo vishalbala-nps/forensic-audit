@@ -1,13 +1,9 @@
-# Stream C — DLT / Ledger Layer
+# Forensic Audit — DLT / Ledger Layer
 
 Immutable, tamper-evident audit ledger for the forensic watermarking system.
 Records every decryption event on a Hyperledger Fabric ledger, keyed by the
 watermark embedded in the recipient's copy, so a leaked document can be traced
 back to the exact recipient and decryption session.
-
-This repository contains **only Stream C**. Streams A (PQC crypto), B
-(watermarking) and D (integration) live elsewhere and consume this one through
-the two functions in [Interface contract](#interface-contract).
 
 ---
 
@@ -63,8 +59,8 @@ and will refuse to run without it.
 ### 3. Clone and prepare
 
 ```bash
-git clone <repo-url> stream-c
-cd stream-c
+git clone https://github.com/vishalbala-nps/forensic-audit
+cd forensic-audit
 chmod +x scripts/*.sh
 ```
 
@@ -115,14 +111,14 @@ When you are done:
 ## Repository layout
 
 ```
-stream-c/
+forensic-audit/
 ├── chaincode/                  Fabric smart contract (Node.js)
 │   ├── index.js                exports the contract to the runtime
 │   ├── package.json            MUST contain scripts.start
 │   ├── npm-shrinkwrap.json     pins the exact dependency tree
 │   └── lib/forensicAudit.js    RecordDecryption, LookupByWatermark, GetAllRecords
 ├── client/
-│   ├── ledger_client.py        the interface other streams import
+│   ├── ledger_client.py        the interface clients import
 │   └── requirements.txt        stdlib only for now
 ├── scripts/                    setup, deploy, invoke, query, logs, tests
 └── testdata/                   fixtures — see testdata/README.md
@@ -134,7 +130,7 @@ Not tracked: `fabric-samples/`, `node_modules/`, `.cc-sequence`.
 
 ## Interface contract
 
-**Stream D imports these two functions and nothing else.** The implementation
+**The UI/Client imports these two functions and nothing else.** The implementation
 behind them may change (CLI wrapper today, Node gateway service later, or the
 hash-chain fallback) without affecting callers.
 
