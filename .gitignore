@@ -1,0 +1,32 @@
+# Fabric — installed separately, never vendored
+fabric-samples/
+organizations/
+wallet/
+*.block
+*.tx
+
+# Chaincode sequence tracker, written by setup.sh / redeploy.sh
+.cc-sequence
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Offline packaging artefacts — large, regenerate rather than commit
+images/*.tar
+wheels/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Logs
+*.log

@@ -1,0 +1,11 @@
+{
+  "record_id": "71e0e29c-ef4d-509f-a92d-4022c119ae3b",
+  "watermark_id": "c3d4e5f60718293a4b5c",
+  "recipient_id": "user-203",
+  "document_hash": "3e8fb0d7625665762b98473a6643d50521c27310b3313755e4a9b9cd0d4f2e43",
+  "watermarked_doc_hash": "8f93aa105cf46fd4d531f717401a1bc925bad15863417f50ebfd7ee2a7b82d89",
+  "timestamp": "2026-09-25T10:15:30Z",
+  "pqc_algorithm": "ML-DSA-65",
+  "signature": "c3R1YnNpZ25hdHVyZWZvcnRlc3Rpbmdvbmx5",
+  "recipient_pubkey_fingerprint": "bf609f20e9f648b6522a94624bf50245baf332936c766f0e5d6ba04ddb75f4be"
+}
